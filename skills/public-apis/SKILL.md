@@ -1,15 +1,14 @@
 ---
 name: public-apis
 description: >
-  Search and recommend free, public APIs from a curated collection of 1400+ APIs
-  across 51 categories. Covers weather, finance, maps, geocoding, music, movies,
-  games, news, social, authentication, machine-learning, AI, sports, food, recipes,
-  animals, anime, books, calendar, cloud, cryptocurrency, currency, data, development,
-  dictionaries, documents, email, entertainment, environment, events, government,
-  health, jobs, music, open-data, patent, personality, phone, photography, science,
-  security, shopping, social, transportation, URL-shorteners, vehicle, video, and more.
-  Helps developers find the right API for their project. API directory, API catalog,
-  API discovery, API recommendation, free API, open API, REST API, web service.
+  Find and recommend free, public APIs for any project. Use this skill whenever someone
+  needs an API — whether they ask "is there a free weather API?", "I need to add payment
+  to my app", "find me something for sending emails", or are building a feature that
+  clearly requires a third-party service (maps, auth, data feeds, etc.). Covers 1400+
+  APIs across 51 categories including weather, finance, geocoding, entertainment, games,
+  social media, machine learning, health, transportation, and more. Also use this when
+  someone asks about public-apis, the GitHub API directory, or wants to compare API
+  options for a given use case. Handles both English and Chinese queries (天气API, 免费接口, 地图服务).
 ---
 
 # Public APIs — 免费 API 推荐助手
@@ -18,23 +17,21 @@ description: >
 > 收录了 1425 个免费 API，覆盖 51 个分类
 > 同步日期：2026-03-12
 
-## 字段说明
+## 工作流程
 
-每个 API 条目包含以下字段：
-
-| 字段 | 含义 | 取值 |
-| --- | --- | --- |
-| **API** | API 名称（通常含链接） | 文本 |
-| **Description** | 功能简述 | 文本 |
-| **Auth** | 认证方式 | 空 = 无需认证, `apiKey`, `OAuth`, `X-Mashape-Key`, `User-Agent` |
-| **HTTPS** | 是否支持 HTTPS | Yes / No |
-| **CORS** | 是否支持跨域 | Yes / No / Unknown |
-
-**认证复杂度排序**（从简到繁）：无需认证 → apiKey → User-Agent → X-Mashape-Key → OAuth
+1. **理解需求** — 用户想实现什么功能？是前端调用（需要 CORS）还是后端？对认证复杂度有偏好吗？
+2. **匹配分类** — 从下方分类索引中找到 1-3 个最相关的分类。分类名本身语义清晰，大部分情况可以直接匹配；对于不太直观的映射，参考底部的「易混淆分类映射」。
+3. **读取 reference 文件** — 用 Read 工具加载对应的 `references/<slug>.md`，文件内是该分类下所有 API 的表格。
+4. **筛选并推荐 3-5 个 API** — 优先考虑：
+   - 功能与需求的匹配度（最重要）
+   - 认证简单性：无需认证 > `apiKey` > `User-Agent` > `OAuth`
+   - HTTPS 支持（优先 Yes）
+   - CORS 支持（前端场景优先 Yes）
+5. **结构化输出** — 使用下方的推荐格式呈现结果，给出推荐理由帮助用户决策。
 
 ## 分类索引
 
-以下是所有分类及其对应的 reference 文件。**请根据用户需求匹配分类后，使用 Read 工具读取对应的 reference 文件获取详细 API 列表。**
+根据用户需求匹配分类后，使用 Read 工具读取对应 reference 文件。reference 文件路径相对于本 skill 目录。
 
 <!-- CATEGORY_TABLE_START -->
 | 分类 | API 数量 | Reference 文件 |
@@ -92,106 +89,60 @@ description: >
 | Weather | 31 | `references/weather.md` |
 <!-- CATEGORY_TABLE_END -->
 
-## 工作流程
+## Reference 文件字段说明
 
-当用户询问 API 推荐时，按以下步骤操作：
+每个 reference 文件是一个 Markdown 表格，字段含义：
 
-1. **理解需求** — 明确用户要实现什么功能（如"天气预报"、"发送短信"、"图像识别"）
-2. **匹配分类** — 根据下方「常见关键词映射」和分类索引，定位 1-3 个最相关的分类
-3. **读取 reference** — 使用 Read 工具加载对应的 `references/*.md` 文件
-4. **筛选推荐** — 根据以下优先级筛选：
-   - 认证复杂度（优先推荐无需认证或仅 apiKey 的）
-   - HTTPS 支持（优先 Yes）
-   - CORS 支持（如用于前端，优先 Yes）
-   - 功能匹配度（Description 与需求的相关性）
-5. **对比呈现** — 使用下方输出格式模板，给出 2-5 个推荐
-
-## 常见关键词映射
-
-用户输入的关键词不一定精确匹配分类名，以下是常见映射：
-
-| 用户关键词 | 对应分类 |
+| 字段 | 含义 |
 | --- | --- |
-| weather, 天气, 气象 | Weather |
-| map, 地图, geocode, 经纬度, 地址 | Geocoding |
-| stock, 股票, 金融, payment, 支付 | Finance |
-| crypto, 比特币, 以太坊, 区块链 | Cryptocurrency |
-| currency, 汇率, 外汇 | Currency Exchange |
-| movie, 电影, TV, 电视 | Entertainment |
-| music, 音乐, song, 歌曲 | Music |
-| book, 书, 图书, 阅读 | Books |
-| news, 新闻, 头条 | News |
-| game, 游戏, comic, 漫画 | Games & Comics |
-| anime, 动漫, 动画 | Anime |
-| animal, 动物, cat, dog, 猫, 狗 | Animals |
-| food, 食物, recipe, 食谱, 饮料 | Food & Drink |
-| health, 健康, medical, 医疗 | Health |
-| sport, 运动, fitness, 健身, football, 足球 | Sports & Fitness |
-| job, 工作, 招聘 | Jobs |
-| email, 邮件 | Email |
-| sms, phone, 电话, 短信 | Phone |
-| photo, image, 图片, 照片 | Photography |
-| video, 视频 | Video |
-| AI, machine learning, 机器学习, NLP, OCR | Machine Learning |
-| translate, 翻译, dictionary, 词典 | Dictionaries |
-| validate, 验证, email check | Data Validation |
-| shorten, 短链接, URL | URL Shorteners |
-| storage, 云存储, file, 文件 | Cloud Storage & File Sharing |
-| calendar, 日历, holiday, 节假日 | Calendar |
-| government, 政府, 公共数据 | Government |
-| environment, 环境, 空气质量, pollution | Environment |
-| security, 安全, malware, 恶意软件 | Security, Anti-Malware |
-| track, 物流, 快递, shipping | Tracking |
-| transport, 交通, flight, 航班, train, 火车 | Transportation |
-| car, 汽车, vehicle | Vehicle |
-| shop, 购物, product, 商品 | Shopping |
-| social, 社交, twitter, reddit | Social |
-| dev, 开发, github, CI/CD | Development, Continuous Integration |
-| text, 文本分析, sentiment, 情感分析 | Text Analysis |
-| science, 科学, math, 数学 | Science & Math |
-| test, 测试数据, mock, fake | Test Data |
-| personality, 名言, quote, joke, 笑话 | Personality |
-| art, design, 艺术, 设计 | Art & Design |
-| document, 文档, PDF, 生产力 | Documents & Productivity |
-| patent, 专利 | Patent |
-| event, 活动, 会议 | Events |
-| open data, 开放数据 | Open Data |
-| open source, 开源 | Open Source Projects |
-| auth, 认证, OAuth, login | Authentication & Authorization |
-| blockchain, 区块链 | Blockchain |
-| business, 商业, company | Business |
-| programming, 编程, code | Programming |
+| **API** | 名称 + 链接 |
+| **Description** | 功能简述 |
+| **Auth** | 认证方式（空 = 无需认证, `apiKey`, `OAuth`, `User-Agent`） |
+| **HTTPS** | 是否支持 HTTPS |
+| **CORS** | 是否支持跨域（Yes / No / Unknown） |
 
-## 输出格式模板
+## 推荐输出格式
 
-### 单个推荐
+推荐 3 个以上时用对比表，少于 3 个用卡片格式：
 
-```
-**[API 名称](链接)**
-- 简介: {Description}
-- 认证: {Auth 方式}
-- HTTPS: {Yes/No}
-- CORS: {Yes/No/Unknown}
-- 推荐理由: {简要说明为何适合用户需求}
-```
-
-### 多选对比表
+### 对比表（优先使用）
 
 | API | 简介 | 认证 | HTTPS | CORS | 推荐理由 |
 | --- | --- | --- | --- | --- | --- |
-| [名称](链接) | ... | ... | ... | ... | ... |
+| [名称](链接) | 功能描述 | 认证方式 | Yes/No | Yes/No | 为什么适合 |
+
+### 卡片格式
+
+**[API 名称](链接)**
+- 简介：功能描述
+- 认证：认证方式 | HTTPS：Yes/No | CORS：Yes/No
+- 推荐理由：为什么适合用户需求
+
+## 易混淆分类映射
+
+大部分需求可以直接从分类名匹配，以下列出容易映射错误的场景：
+
+| 用户需求 | 正确分类（非直觉） |
+| --- | --- |
+| 地图、经纬度、地址解析、IP 定位 | Geocoding（不是 Geography） |
+| 电影、电视剧 | Entertainment（不是 Video） |
+| 笑话、名言、随机趣味内容 | Personality |
+| 翻译、词典 | Dictionaries |
+| 短信、电话号码验证 | Phone |
+| 物流追踪、快递查询 | Tracking（不是 Transportation） |
+| 空气质量、污染数据 | Environment |
+| 测试用假数据、mock data | Test Data |
+| 恶意软件检测、病毒扫描 | Anti-Malware（不是 Security） |
+| 占位图片（placeholder） | Photography（如 PlaceKitten 在 Animals） |
+| 比特币、以太坊价格 | Cryptocurrency（不是 Finance） |
+| 汇率转换 | Currency Exchange（不是 Finance） |
 
 ## 数据同步
 
-数据来自上游仓库的 README.md，通过 `scripts/split_readme.py` 拆分生成。
+运行 `scripts/split_readme.py` 从上游仓库更新数据。脚本会自动更新本文件的分类索引表。
 
-更新步骤：
 ```bash
-python3 scripts/split_readme.py
+python3 scripts/split_readme.py              # 从 GitHub 下载
+python3 scripts/split_readme.py --input FILE # 使用本地文件
+python3 scripts/split_readme.py --dry-run    # 预览模式
 ```
-
-脚本支持的参数：
-- `--input FILE` — 使用本地 README 文件
-- `--dry-run` — 预览模式，不写入文件
-
-脚本会自动更新本文件中的分类索引表（API 数量和同步日期）。

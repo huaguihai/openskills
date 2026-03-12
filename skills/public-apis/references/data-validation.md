@@ -8,7 +8,3 @@ API | Description | Auth | HTTPS | CORS |
 | [US Extract](https://www.smarty.com/products/apis/us-extract-api) | Extract postal addresses from any text including emails | `apiKey` | Yes | Yes | |
 | [US Street Address](https://www.smarty.com/docs/cloud/us-street-api) | Validate and append data for any US postal address | `apiKey` | Yes | Yes | |
 | [vatlayer](https://vatlayer.com/documentation) | VAT number validation | `apiKey` | Yes | Unknown | |
-
-**[⬆ Back to Index](#index)**
-<br >
-<br >

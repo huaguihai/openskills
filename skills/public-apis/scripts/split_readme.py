@@ -86,12 +86,21 @@ def parse_categories(readme: str) -> list[dict]:
             elif in_table and stripped and not stripped.startswith("|"):
                 in_table = False
 
+        # 清理上游残留内容（Back to Index 链接、br 标签、License 等）
+        cleaned_lines = []
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("**[⬆"):
+                break
+            cleaned_lines.append(line)
+        clean_block = "\n".join(cleaned_lines).rstrip()
+
         slug = slugify(name)
         categories.append(
             {
                 "name": name,
                 "slug": slug,
-                "content": block,
+                "content": clean_block,
                 "api_count": api_count,
             }
         )

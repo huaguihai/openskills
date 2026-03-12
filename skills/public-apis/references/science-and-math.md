@@ -34,7 +34,3 @@ API | Description | Auth | HTTPS | CORS |
 | [USGS Water Services](https://waterservices.usgs.gov/) | Water quality and level info for rivers and lakes | No | Yes | No |
 | [World Bank](https://datahelpdesk.worldbank.org/knowledgebase/topics/125589) | World Data | No | Yes | No |
 | [xMath](https://x-math.herokuapp.com/) | Random mathematical expressions | No | Yes | Yes |
-
-**[⬆ Back to Index](#index)**
-<br >
-<br >
