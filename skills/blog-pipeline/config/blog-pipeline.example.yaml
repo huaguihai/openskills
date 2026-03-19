@@ -1,0 +1,71 @@
+# Blog Pipeline Configuration Example
+# Copy this file to your project root as blog-pipeline.yaml and customize.
+
+blog:
+  # Project root directory (where git repo lives)
+  root: "."
+
+  # Content directories (relative to root)
+  posts_dir: "content/posts/"
+  covers_dir: "public/images/covers/"
+  post_images_dir: "public/images/posts/"
+
+  # URL prefix for images in markdown (no trailing slash)
+  image_url_prefix: "/images/posts"
+
+# Path to your style guide (relative to root)
+# This file defines voice, formatting rules, terminology, and self-check lists.
+# If you don't have one, the skill will use sensible defaults.
+style_guide: "BLOG_STYLE.md"
+
+# Benchmark articles to read before writing (relative to posts_dir)
+# These set the quality bar and style reference.
+benchmarks: []
+  # - "my-best-article.md"
+  # - "another-great-post.md"
+
+# Optional templates for writer and reviewer agents
+# If not set, the skill uses its built-in workflow.
+templates:
+  writer: null    # e.g., "templates/blog-writer.md"
+  reviewer: null  # e.g., "templates/blog-reviewer.md"
+
+# Frontmatter schema (customize for your blog framework)
+frontmatter:
+  # Valid categories for your blog
+  categories:
+    - "Tutorial"
+    - "Opinion"
+    - "Resource"
+
+  # Category → color mapping (Tailwind classes or hex)
+  colors:
+    Tutorial: "text-blue-600"
+    Opinion: "text-gray-600"
+    Resource: "text-red-800"
+
+  # Valid patterns (for card backgrounds, if applicable)
+  patterns:
+    - "default"
+
+# Cover image settings
+cover:
+  width: 660
+  height: 300
+  # Style preset: "dark-warm" (dark gradient), "light-clean" (white bg)
+  style: "dark-warm"
+
+# Post image settings
+post_image:
+  width: 660
+  height: 400
+  style: "light-card"
+
+# Deploy commands (executed in order from blog.root)
+# Use {slug} as placeholder for the article slug
+deploy:
+  steps:
+    - "git add ."
+    - 'git commit -m "feat(blog): add {slug}"'
+    - "npm run build"
+    - "git push"

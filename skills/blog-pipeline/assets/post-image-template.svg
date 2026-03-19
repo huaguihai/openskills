@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="400" viewBox="0 0 660 400">
+  <!-- Background -->
+  <rect width="660" height="400" fill="#FAFAFA" rx="12"/>
+
+  <!-- Card with shadow -->
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+  <rect x="30" y="20" width="600" height="360" rx="10" fill="white" filter="url(#shadow)"/>
+
+  <!-- Title: Replace {IMAGE_TITLE} -->
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-weight="700" font-size="18" fill="#1C1917" text-anchor="middle" x="330" y="55">{IMAGE_TITLE}</text>
+
+  <!-- Subtitle: Replace {IMAGE_SUBTITLE} -->
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#78716C" text-anchor="middle" x="330" y="75">{IMAGE_SUBTITLE}</text>
+
+  <!-- Content area: Replace everything below with actual content -->
+  <!-- Example: Three vertical blocks -->
+
+  <!-- Block 1 (Orange theme) -->
+  <rect x="80" y="95" width="500" height="72" rx="8" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.5"/>
+  <rect x="80" y="95" width="500" height="24" rx="8" fill="#EA580C"/>
+  <rect x="80" y="107" width="500" height="12" fill="#EA580C"/>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-weight="600" font-size="13" fill="white" x="100" y="113">{BLOCK_1_TITLE}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#44403C" x="100" y="140">{BLOCK_1_CONTENT}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="11" fill="#78716C" x="100" y="156">{BLOCK_1_DESCRIPTION}</text>
+
+  <!-- Arrow down -->
+  <g transform="translate(320, 170)">
+    <line x1="10" y1="0" x2="10" y2="20" stroke="#A8A29E" stroke-width="1.5"/>
+    <polyline points="4,14 10,22 16,14" fill="none" stroke="#A8A29E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Block 2 (Blue theme) -->
+  <rect x="80" y="195" width="500" height="72" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <rect x="80" y="195" width="500" height="24" rx="8" fill="#2563EB"/>
+  <rect x="80" y="207" width="500" height="12" fill="#2563EB"/>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-weight="600" font-size="13" fill="white" x="100" y="213">{BLOCK_2_TITLE}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#44403C" x="100" y="240">{BLOCK_2_CONTENT}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="11" fill="#78716C" x="100" y="256">{BLOCK_2_DESCRIPTION}</text>
+
+  <!-- Arrow down -->
+  <g transform="translate(320, 270)">
+    <line x1="10" y1="0" x2="10" y2="20" stroke="#A8A29E" stroke-width="1.5"/>
+    <polyline points="4,14 10,22 16,14" fill="none" stroke="#A8A29E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Block 3 (Green theme) -->
+  <rect x="80" y="295" width="500" height="72" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <rect x="80" y="295" width="500" height="24" rx="8" fill="#16A34A"/>
+  <rect x="80" y="307" width="500" height="12" fill="#16A34A"/>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-weight="600" font-size="13" fill="white" x="100" y="313">{BLOCK_3_TITLE}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="12" fill="#44403C" x="100" y="340">{BLOCK_3_CONTENT}</text>
+  <text font-family="-apple-system,'Segoe UI',sans-serif" font-size="11" fill="#78716C" x="100" y="356">{BLOCK_3_DESCRIPTION}</text>
+</svg>
