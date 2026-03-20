@@ -52,8 +52,9 @@ Read all files fresh every time — never rely on memory from previous sessions.
 
 **Required reads:**
 1. Style guide (from config: `style_guide` path) — read in full
-2. Benchmark articles (from config: `benchmarks` list)
-3. Recent 2-3 articles from the posts directory
+2. Hooks methodology (from config: `hooks_guide` path, if configured) — title & opening techniques
+3. Benchmark articles (from config: `benchmarks` list)
+4. Recent 2-3 articles from the posts directory
 
 When reading benchmark articles, note their **core insight** — the one sentence that
 justifies the article's existence. Your article needs an insight of equal weight.
