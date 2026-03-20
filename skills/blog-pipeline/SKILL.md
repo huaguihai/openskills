@@ -126,6 +126,7 @@ Follow the writer template if configured (`templates.writer`), otherwise:
 - [ ] All number comparisons use precise data
 - [ ] Opinion pieces have a transferable framework
 - [ ] Core insight is clearly visible (not buried in paragraph five)
+- [ ] Every H2 section has concrete support (example/data/reasoning), not just declarations
 
 ---
 
@@ -172,11 +173,11 @@ Follow the reviewer template if configured (`templates.reviewer`), otherwise per
 
 ### Part A: Format Review (Floor)
 
-- Style scoring (8 items, max 40)
+- Style scoring (9 items, max 45) — includes an "argument depth" dimension
 - Compliance check
 - Anti-AI & voice check
 
-Verdict: 🟢 ≥35 all ✅ → Part B | 🟡 ≥30 → fix and re-review | 🔴 <30 → back to Step 3
+Verdict: 🟢 ≥38 all ✅ and depth ≥3 → Part B | 🟡 ≥33 → fix and re-review | 🔴 <33 or depth ≤2 → back to Step 3
 
 ### Part B: Content Quality Review (Ceiling)
 
@@ -193,11 +194,17 @@ These checks determine whether the article is "publishable" vs "worth publishing
 3. **Delete-the-title test**: Cover the title, read only the body — can you tell what
    the article's stance is? If the body has no clear position, it's avoiding judgment.
 
+4. **Depth test**: Cover the first sentence (thesis) of each section, read only what follows —
+   if it's just restating the same idea in different words rather than actually arguing
+   (examples, data, reasoning), the section is shallow. "Declare-and-move" pattern detected
+   → back to Step 3 to add evidence.
+
 **Checkpoint**:
 - [ ] Format review 🟢 passed
 - [ ] At least 1 paragraph worth screenshotting
 - [ ] Not noticeably worse than benchmark articles
 - [ ] Body has a clear stance
+- [ ] Depth test passed — each section has substantive argument, not just rephrased declarations
 
 ---
 
@@ -224,7 +231,7 @@ If the user says "don't publish yet", stop after Step 6.
 | Article | {path} |
 | Cover | {path} |
 | Images | {paths} |
-| Review | 🟢 {score}/40 |
+| Review | 🟢 {score}/45 |
 | Screenshot paragraph | {summary of most shareable paragraph} |
 | Deploy | done |
 ```
