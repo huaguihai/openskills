@@ -54,13 +54,23 @@ The script:
 - Skips auth errors (401/403), retries on rate limits (429) and timeouts
 - Outputs image path to stdout on success, exits 1 on failure
 
-### Send to Feishu
+### Send to IM
 
 ```bash
-bash ${CLAUDE_SKILL_DIR}/bin/send-feishu.sh <image_path>
+bash ${CLAUDE_SKILL_DIR}/bin/send.sh <image_path> [channel]
 ```
 
-Reads config from `~/.claude-to-im/config.env`, auto-handles token + upload + send.
+| Parameter | Required | Default | Options |
+|-----------|----------|---------|---------|
+| image_path | yes | — | Local file path |
+| channel | no | auto (first available) | feishu, telegram, discord, all |
+
+Auto-detects configured channels from `~/.claude-to-im/config.env`:
+- **Feishu/Lark**: needs `CTI_FEISHU_APP_ID`, `CTI_FEISHU_APP_SECRET`, `CTI_FEISHU_ALLOWED_USERS`
+- **Telegram**: needs `CTI_TG_BOT_TOKEN`, `CTI_TG_CHAT_ID`
+- **Discord**: needs `CTI_DISCORD_WEBHOOK_URL`
+
+Use `all` to broadcast to every configured channel at once.
 
 ## Model Selection
 
@@ -85,7 +95,8 @@ User: "画一张赛博朋克风格的城市夜景"
 1. Prompt: `"A cyberpunk cityscape at night, neon lights reflecting on wet streets, towering skyscrapers with holographic ads, flying vehicles, cinematic photography, ultra realistic, 8k resolution"`
 2. `bash ${CLAUDE_SKILL_DIR}/bin/generate.sh "A cyberpunk cityscape..." "1024x1024"`
 3. Read the output file to display
-4. If asked: `bash ${CLAUDE_SKILL_DIR}/bin/send-feishu.sh /tmp/grok_image_xxx.jpg`
+4. If asked: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg telegram`
+   Or send to all: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg all`
 
 ## Notes
 
