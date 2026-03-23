@@ -1,0 +1,25 @@
+{
+  "description": "危险模式黑名单 — 永不自动授权",
+  "patterns": [
+    {"regex": "\\brm\\s+-rf\\b", "desc": "递归强制删除"},
+    {"regex": "\\bsudo\\b", "desc": "提权操作"},
+    {"regex": "\\bchmod\\b", "desc": "修改权限"},
+    {"regex": "\\bchown\\b", "desc": "修改所有者"},
+    {"regex": "\\bkill\\b", "desc": "终止进程"},
+    {"regex": "\\bgit\\s+push\\b", "desc": "推送到远程"},
+    {"regex": "\\bgit\\s+reset\\s+--hard\\b", "desc": "硬重置"},
+    {"regex": "\\bgit\\s+checkout\\s+--\\s+\\.", "desc": "丢弃所有修改"},
+    {"regex": "\\bcurl\\s+.*-X\\s+(POST|PUT|DELETE)\\b", "desc": "curl 写操作"},
+    {"regex": "\\bwget\\b", "desc": "wget 下载"},
+    {"regex": "\\beval\\b", "desc": "动态执行"},
+    {"regex": "\\bexec\\b", "desc": "替换进程"},
+    {"regex": ">\\s*/", "desc": "重定向到根路径"},
+    {"regex": "\\b(token|secret|password|key)\\b", "desc": "涉及敏感凭证", "case_insensitive": true},
+    {"regex": "\\bDROP\\b", "desc": "删除数据库对象", "case_insensitive": true},
+    {"regex": "\\bDELETE\\s+FROM\\b", "desc": "删除数据库记录", "case_insensitive": true},
+    {"regex": "\\bTRUNCATE\\b", "desc": "清空数据库表", "case_insensitive": true},
+    {"regex": "\\bgit\\s+branch\\s+-D\\b", "desc": "强制删除分支"},
+    {"regex": "\\bgit\\s+push\\s+.*--force\\b", "desc": "强制推送"},
+    {"regex": "\\b--no-verify\\b", "desc": "跳过 hooks 验证"}
+  ]
+}
