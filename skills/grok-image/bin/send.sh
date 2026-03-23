@@ -26,8 +26,65 @@ fi
 
 source "$CONFIG_ENV"
 
+BINDINGS_FILE="$HOME/.claude-to-im/data/bindings.json"
 SENT=0
 ERRORS=0
+
+# ─── Source Detection ────────────────────────────────────────────
+# When a message arrives via the claude-to-im bridge, the bridge
+# updates the binding's `updatedAt` timestamp. By finding the most
+# recently updated binding, we can infer which channel sent the
+# current request and route the image back there.
+detect_source_channel() {
+  if [[ ! -f "$BINDINGS_FILE" ]]; then
+    return 1
+  fi
+
+  python3 << 'DETECT_EOF'
+import json, os, sys
+from datetime import datetime, timezone, timedelta
+
+bindings_path = os.environ.get("BINDINGS_FILE", "")
+if not bindings_path or not os.path.exists(bindings_path):
+    sys.exit(1)
+
+with open(bindings_path) as f:
+    bindings = json.load(f)
+
+if not bindings:
+    sys.exit(1)
+
+# Find the most recently updated active binding
+best = None
+best_time = None
+for key, b in bindings.items():
+    if not b.get("active", False):
+        continue
+    updated = b.get("updatedAt", "")
+    if not updated:
+        continue
+    try:
+        t = datetime.fromisoformat(updated.replace("Z", "+00:00"))
+    except (ValueError, AttributeError):
+        continue
+    if best_time is None or t > best_time:
+        best_time = t
+        best = b
+
+if not best or not best_time:
+    sys.exit(1)
+
+# Only trust the detection if the binding was updated recently (within 5 min).
+# Otherwise, this is likely a direct CLI session, not a bridge request.
+now = datetime.now(timezone.utc)
+if (now - best_time) > timedelta(minutes=5):
+    sys.exit(1)
+
+print(best["channelType"])
+DETECT_EOF
+}
+
+export BINDINGS_FILE
 
 # ─── Feishu / Lark ───────────────────────────────────────────────
 send_feishu() {
@@ -170,13 +227,23 @@ if [[ "$TARGET" == "all" ]]; then
     fi
   done
 elif [[ "$TARGET" == "auto" ]]; then
-  # Auto: send to first available channel
-  for ch in $AVAIL; do
-    if send_to "$ch"; then
+  # Auto: detect source channel from bridge bindings, fall back to first available
+  DETECTED=$(detect_source_channel 2>/dev/null) || DETECTED=""
+  if [[ -n "$DETECTED" ]]; then
+    echo "Source detected: ${DETECTED}" >&2
+    if send_to "$DETECTED"; then
       SENT=1
-      break
     fi
-  done
+  fi
+  # Fallback if detection failed or send failed
+  if [[ "$SENT" -eq 0 ]]; then
+    for ch in $AVAIL; do
+      if send_to "$ch"; then
+        SENT=1
+        break
+      fi
+    done
+  fi
 else
   # Specific channel
   if send_to "$TARGET"; then
