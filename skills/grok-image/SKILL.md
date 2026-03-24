@@ -32,7 +32,7 @@ allowed-tools:
 3. **Pick model** — choose variant based on need (see Model Selection below)
 4. **Generate** — run the script; it handles provider discovery and failover
 5. **Display** — Read the output image file to show the user
-6. **Deliver** (optional) — send to Feishu if the user asks
+6. **Deliver** — ALWAYS send to IM after display using `send.sh` with `auto` routing. Only skip if the user explicitly says they don't need delivery, or if running in direct CLI mode with no IM channels configured.
 
 ## Commands
 
@@ -103,10 +103,9 @@ User: "画一张赛博朋克风格的城市夜景"
 1. Prompt: `"A cyberpunk cityscape at night, neon lights reflecting on wet streets, towering skyscrapers with holographic ads, flying vehicles, cinematic photography, ultra realistic, 8k resolution"`
 2. `bash ${CLAUDE_SKILL_DIR}/bin/generate.sh "A cyberpunk cityscape..." "1024x1024"`
 3. Read the output file to display
-4. If asked to deliver: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg`
+4. ALWAYS deliver: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg`
    (auto-routes back to the channel that sent the request)
-   Or explicitly: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg telegram`
-   Or broadcast: `bash ${CLAUDE_SKILL_DIR}/bin/send.sh /tmp/grok_image_xxx.jpg all`
+   User can specify destination: "发到飞书" → `feishu`, "send to all" → `all`
 
 ## Notes
 
