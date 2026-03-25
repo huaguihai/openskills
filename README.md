@@ -2,19 +2,19 @@
 
 Open-source AI agent skills for [OpenClaw](https://github.com/anthropics/openclaw) and Claude Code.
 
-开源 AI Agent 技能集，适用于 OpenClaw 和 Claude Code。
+[🇨🇳 中文版](README_CN.md)
 
 ## Skills
 
-| Skill | Description | 简介 |
-|-------|-------------|------|
-| [sentinel](skills/sentinel/) | Unified security — skill vetting, dependency interception (3-layer defense), project vulnerability scan, system audit | 统一安全防护 — Skill 审查、依赖安装拦截（三层纵深防御）、项目漏洞体检、系统巡检 |
-| [blog-pipeline](skills/blog-pipeline/) | End-to-end blog writing pipeline with style enforcement and independent review | 端到端博客写作流水线，含风格规范和独立审核 |
-| [public-apis](skills/public-apis/) | Find and recommend free public APIs across 51 categories | 从 51 个分类中查找和推荐免费公共 API |
+| Skill | Description |
+|-------|-------------|
+| [sentinel](skills/sentinel/) | Unified security — skill vetting, dependency interception (3-layer defense), project vulnerability scan, system audit |
+| [blog-pipeline](skills/blog-pipeline/) | End-to-end blog writing pipeline with style enforcement and independent review |
+| [public-apis](skills/public-apis/) | Find and recommend free public APIs across 51 categories |
 
 ## Sentinel — Supply Chain Defense
 
-Born from the [LiteLLM PyPI attack (2026-03-24)](https://x.com/karpathy/status/2036487306585268612). A single `pip install` was enough to exfiltrate SSH keys, AWS credentials, and API keys from 97M monthly downloads.
+Born from the [LiteLLM PyPI attack (2026-03-24)](https://x.com/karpathy/status/2036487306585268612). A single `pip install` was enough to exfiltrate SSH keys, AWS credentials, and API keys from a package with 97M monthly downloads.
 
 Sentinel internalizes security into the agent itself — no technical knowledge required from the user.
 
@@ -45,18 +45,6 @@ cp -r skills/sentinel ~/.claude/skills/
 ```
 
 For sentinel's full auto-interception (M2), you also need to configure Claude Code hooks — see [sentinel/SKILL.md](skills/sentinel/SKILL.md) for details.
-
-### 安装
-
-```bash
-# 复制单个 skill 到 OpenClaw
-cp -r skills/sentinel ~/.openclaw/skills/
-
-# 或复制到 Claude Code
-cp -r skills/sentinel ~/.claude/skills/
-```
-
-sentinel 的依赖自动拦截（M2）需要配置 Claude Code hooks，详见 [sentinel/SKILL.md](skills/sentinel/SKILL.md)。
 
 ## Structure
 
