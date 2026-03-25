@@ -11,6 +11,7 @@ Open-source AI agent skills for [OpenClaw](https://github.com/anthropics/opencla
 | [sentinel](skills/sentinel/) | Unified security — skill vetting, dependency interception (3-layer defense), project vulnerability scan, system audit |
 | [blog-pipeline](skills/blog-pipeline/) | End-to-end blog writing pipeline with style enforcement and independent review |
 | [public-apis](skills/public-apis/) | Find and recommend free public APIs across 51 categories |
+| [opportunity-radar](skills/opportunity-radar/) | Indie dev opportunity discovery — 10 transformation strategies to find software business ideas from products/markets/news |
 
 ## Sentinel — Supply Chain Defense
 
@@ -54,6 +55,8 @@ skills/
 │   ├── SKILL.md
 │   ├── scripts/       # check-package.sh, scan-installed.sh, etc.
 │   └── references/    # red-flags.md, known-malicious.md, suspicious-patterns.md
+├── opportunity-radar/ # Indie dev opportunity discovery
+│   └── SKILL.md
 ├── blog-pipeline/     # Blog writing pipeline
 └── public-apis/       # Public API discovery
 ```

@@ -11,6 +11,7 @@
 | [sentinel](skills/sentinel/) | 统一安全防护 — Skill 审查、依赖安装拦截（三层纵深防御）、项目漏洞体检、系统巡检 |
 | [blog-pipeline](skills/blog-pipeline/) | 端到端博客写作流水线，含风格规范和独立审核 |
 | [public-apis](skills/public-apis/) | 从 51 个分类中查找和推荐免费公共 API |
+| [opportunity-radar](skills/opportunity-radar/) | 独立开发者商机发现助手 — 10 条转换策略，从产品/市场/资讯中发现软件商机方向 |
 
 ## Sentinel — 供应链防御
 
@@ -54,6 +55,8 @@ skills/
 │   ├── SKILL.md
 │   ├── scripts/       # check-package.sh, scan-installed.sh 等
 │   └── references/    # red-flags.md, known-malicious.md, suspicious-patterns.md
+├── opportunity-radar/ # 独立开发者商机发现
+│   └── SKILL.md
 ├── blog-pipeline/     # 博客写作流水线
 └── public-apis/       # 公共 API 发现
 ```
