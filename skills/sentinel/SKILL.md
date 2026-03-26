@@ -143,6 +143,38 @@ Skill: [名称]
 
 ## M2: 依赖安装拦截（三层纵深防御）
 
+### Hook 安装（必须，否则 M2 不生效）
+
+M2 需要 Claude Code Hook 才能自动拦截。安装方式二选一：
+
+**方式 A：独立 Hook（推荐新用户）**
+
+在 `~/.claude/settings.json` 中添加：
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/skills/sentinel/hooks/sentinel-pre-install.sh",
+            "timeout": 15000
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**方式 B：嵌入已有 Hook（已有 PreToolUse Hook 的用户）**
+
+将 `hooks/sentinel-pre-install.sh` 中的核心逻辑嵌入到你现有的 pre-tool-use hook 中。参考脚本中的 `sentinel_should_block` 函数。
+
+> **重要**：只拦截硬信号（typosquatting、known-malicious、publish-age < 48h、registry 不存在）。OSV 历史漏洞不带版本号查询会误杀正常包（如 express、flask），不作为自动拦截依据。
+
 ### 触发条件
 
 Agent 执行 `pip install`、`pip3 install`、`npm install`、`yarn add`、`pnpm add` 时，由 Claude Code Hook 自动触发。
