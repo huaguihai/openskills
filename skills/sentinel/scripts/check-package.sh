@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# check-package.sh — 查询 PyPI/npm registry + OSV，输出风险评分
-# 用法: check-package.sh <pypi|npm> <package> [version]
+# check-package.sh — Query PyPI/npm registry + OSV, output risk score
+# Usage: check-package.sh <pypi|npm> <package> [version]
 set -euo pipefail
 
 ECOSYSTEM="${1:-}"
@@ -14,7 +14,7 @@ if [ -z "$ECOSYSTEM" ] || [ -z "$PACKAGE" ]; then
   exit 1
 fi
 
-# ─── 输出 JSON 格式的风险报告 ───
+# ─── Output risk report in JSON format ───
 # signals: array of {dimension, value, level}
 # level: green / yellow / red
 # verdict: green / yellow / red
@@ -30,13 +30,13 @@ print(json.dumps(s))
 ")
 }
 
-# ─── 1. 检查 known-malicious 名单 ───
-# 只匹配恶意包条目格式: "- `pkg` —" 或 "- `pkg` v"
+# ─── 1. Check known-malicious list ───
+# Only match malicious package entry format: "- `pkg` —" or "- `pkg` v"
 if [ -f "$MALICIOUS_LIST" ] && grep -qE "^\- \`${PACKAGE}\` (—|v)" "$MALICIOUS_LIST" 2>/dev/null; then
-  add_signal "known-malicious" "在已知恶意包名单中" "red"
+  add_signal "known-malicious" "Found in known malicious package list" "red"
 fi
 
-# ─── 2. Typosquatting 检测（与热门包的编辑距离） ───
+# ─── 2. Typosquatting detection (edit distance to popular packages) ───
 TYPO_CHECK=$(python3 -c "
 import difflib
 popular = ['requests','flask','django','numpy','pandas','boto3','openai','langchain',
@@ -47,7 +47,7 @@ pkg = '${PACKAGE}'.lower()
 for p in popular:
     ratio = difflib.SequenceMatcher(None, pkg, p).ratio()
     if 0.75 < ratio < 1.0 and pkg != p:
-        print(f'与 {p} 高度相似 (相似度 {ratio:.0%})')
+        print(f'Highly similar to {p} (similarity {ratio:.0%})')
         break
 else:
     print('OK')
@@ -57,7 +57,7 @@ if [ "$TYPO_CHECK" != "OK" ]; then
   add_signal "typosquatting" "$TYPO_CHECK" "red"
 fi
 
-# ─── 3. 查询 Registry ───
+# ─── 3. Query Registry ───
 if [ "$ECOSYSTEM" = "pypi" ]; then
   # PyPI JSON API
   if [ -n "$VERSION" ]; then
@@ -69,9 +69,9 @@ if [ "$ECOSYSTEM" = "pypi" ]; then
   REGISTRY_DATA=$(curl -sf "$REGISTRY_URL" 2>/dev/null || echo "")
 
   if [ -z "$REGISTRY_DATA" ]; then
-    add_signal "registry" "包不存在或无法查询" "red"
+    add_signal "registry" "Package not found or query failed" "red"
   else
-    # 提取信息
+    # Extract info
     PKG_INFO=$(echo "$REGISTRY_DATA" | python3 -c "
 import json, sys
 from datetime import datetime, timezone, timedelta
@@ -79,15 +79,15 @@ data = json.load(sys.stdin)
 info = data.get('info', {})
 name = info.get('name', 'unknown')
 version = info.get('version', 'unknown')
-# 获取最新版本的发布时间
+# Get latest version publish time
 releases = data.get('releases', {})
 upload_time = ''
 maintainer_changed = False
 if version in releases and releases[version]:
     upload_time = releases[version][0].get('upload_time_iso_8601', '')
-# 获取所有版本，分析发布节奏
+# Get all versions, analyze release cadence
 versions = sorted(releases.keys())
-# 计算版本发布时间差
+# Calculate version release time delta
 print(json.dumps({
     'name': name,
     'version': version,
@@ -98,7 +98,7 @@ print(json.dumps({
 }))
 " 2>/dev/null || echo '{}')
 
-    # 解析发布时间
+    # Parse publish time
     UPLOAD_TIME=$(echo "$PKG_INFO" | python3 -c "
 import json, sys
 from datetime import datetime, timezone, timedelta
@@ -116,19 +116,19 @@ else:
     if [ "$UPLOAD_TIME" != "-1" ]; then
       HOURS=$(echo "$UPLOAD_TIME" | cut -d. -f1)
       if [ "$HOURS" -lt 48 ]; then
-        add_signal "publish-age" "发布仅 ${HOURS} 小时前" "red"
+        add_signal "publish-age" "Published only ${HOURS} hours ago" "red"
       elif [ "$HOURS" -lt 168 ]; then
-        add_signal "publish-age" "发布 ${HOURS} 小时前（< 7 天）" "yellow"
+        add_signal "publish-age" "Published ${HOURS} hours ago (< 7 days)" "yellow"
       else
-        add_signal "publish-age" "发布超过 7 天" "green"
+        add_signal "publish-age" "Published more than 7 days ago" "green"
       fi
     fi
 
     TOTAL_VERSIONS=$(echo "$PKG_INFO" | python3 -c "import json,sys; print(json.load(sys.stdin).get('total_versions',0))" 2>/dev/null || echo "0")
     if [ "$TOTAL_VERSIONS" -lt 3 ]; then
-      add_signal "maturity" "仅 ${TOTAL_VERSIONS} 个版本" "yellow"
+      add_signal "maturity" "Only ${TOTAL_VERSIONS} versions" "yellow"
     else
-      add_signal "maturity" "${TOTAL_VERSIONS} 个版本" "green"
+      add_signal "maturity" "${TOTAL_VERSIONS} versions" "green"
     fi
   fi
 
@@ -137,7 +137,7 @@ elif [ "$ECOSYSTEM" = "npm" ]; then
   REGISTRY_DATA=$(curl -sf "https://registry.npmjs.org/${PACKAGE}" 2>/dev/null || echo "")
 
   if [ -z "$REGISTRY_DATA" ]; then
-    add_signal "registry" "包不存在或无法查询" "red"
+    add_signal "registry" "Package not found or query failed" "red"
   else
     PKG_INFO=$(echo "$REGISTRY_DATA" | python3 -c "
 import json, sys
@@ -148,7 +148,7 @@ dist_tags = data.get('dist-tags', {})
 latest = dist_tags.get('latest', '')
 latest_time = time_data.get(latest, '')
 versions = [v for v in time_data.keys() if v not in ('created','modified')]
-# 获取维护者
+# Get maintainers
 maintainers = [m.get('name','') for m in data.get('maintainers', [])]
 print(json.dumps({
     'name': data.get('name', 'unknown'),
@@ -176,24 +176,24 @@ else:
     if [ "$UPLOAD_TIME" != "-1" ]; then
       HOURS=$(echo "$UPLOAD_TIME" | cut -d. -f1)
       if [ "$HOURS" -lt 48 ]; then
-        add_signal "publish-age" "发布仅 ${HOURS} 小时前" "red"
+        add_signal "publish-age" "Published only ${HOURS} hours ago" "red"
       elif [ "$HOURS" -lt 168 ]; then
-        add_signal "publish-age" "发布 ${HOURS} 小时前（< 7 天）" "yellow"
+        add_signal "publish-age" "Published ${HOURS} hours ago (< 7 days)" "yellow"
       else
-        add_signal "publish-age" "发布超过 7 天" "green"
+        add_signal "publish-age" "Published more than 7 days ago" "green"
       fi
     fi
 
     TOTAL_VERSIONS=$(echo "$PKG_INFO" | python3 -c "import json,sys; print(json.load(sys.stdin).get('total_versions',0))" 2>/dev/null || echo "0")
     if [ "$TOTAL_VERSIONS" -lt 3 ]; then
-      add_signal "maturity" "仅 ${TOTAL_VERSIONS} 个版本" "yellow"
+      add_signal "maturity" "Only ${TOTAL_VERSIONS} versions" "yellow"
     else
-      add_signal "maturity" "${TOTAL_VERSIONS} 个版本" "green"
+      add_signal "maturity" "${TOTAL_VERSIONS} versions" "green"
     fi
   fi
 fi
 
-# ─── 4. 查询 OSV 漏洞数据库 ───
+# ─── 4. Query OSV vulnerability database ───
 OSV_QUERY="{\"package\":{\"name\":\"${PACKAGE}\",\"ecosystem\":\"$(echo "$ECOSYSTEM" | sed 's/pypi/PyPI/;s/npm/npm/')\"}}"
 if [ -n "$VERSION" ]; then
   OSV_QUERY="{\"package\":{\"name\":\"${PACKAGE}\",\"ecosystem\":\"$(echo "$ECOSYSTEM" | sed 's/pypi/PyPI/;s/npm/npm/')\"},\"version\":\"${VERSION}\"}"
@@ -220,15 +220,15 @@ print(', '.join(ids))
 " 2>/dev/null || echo "unknown")
 
   if [ "$VULN_COUNT" -gt 2 ]; then
-    add_signal "osv-vulns" "${VULN_COUNT} 个已知漏洞 (${VULN_SEVERITY})" "red"
+    add_signal "osv-vulns" "${VULN_COUNT} known vulnerabilities (${VULN_SEVERITY})" "red"
   else
-    add_signal "osv-vulns" "${VULN_COUNT} 个已知漏洞 (${VULN_SEVERITY})" "yellow"
+    add_signal "osv-vulns" "${VULN_COUNT} known vulnerabilities (${VULN_SEVERITY})" "yellow"
   fi
 else
-  add_signal "osv-vulns" "无已知漏洞" "green"
+  add_signal "osv-vulns" "No known vulnerabilities" "green"
 fi
 
-# ─── 5. 综合判定 ───
+# ─── 5. Overall verdict ───
 VERDICT=$(echo "$SIGNALS" | python3 -c "
 import json, sys
 signals = json.load(sys.stdin)
@@ -244,7 +244,7 @@ else:
     print('green')
 ")
 
-# ─── 输出 ───
+# ─── Output ───
 echo "$SIGNALS" | python3 -c "
 import json, sys
 signals = json.load(sys.stdin)

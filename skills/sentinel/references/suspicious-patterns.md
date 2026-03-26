@@ -1,53 +1,53 @@
-# 可疑代码模式库
+# Suspicious Code Pattern Library
 
-> sentinel M2 第二层/第三层扫描时使用的模式匹配规则。
+> Pattern matching rules used during sentinel M2 layer-2/layer-3 scanning.
 
-## Python 包
+## Python Packages
 
-### 🔴 Critical — 立即告警
+### 🔴 Critical — Immediate Alert
 
-| 模式 | 正则 | 说明 |
-|------|------|------|
-| .pth 执行代码 | 文件 `*.pth` 内含 `import \|exec\|eval\|subprocess\|socket\|http\|urllib\|requests` | LiteLLM 攻击手法 |
-| exec + 编码 | `(exec\|eval\|compile)\s*\(.*?(base64\|codecs\.decode\|bytes\.fromhex\|decode\()` | 混淆执行 |
-| 敏感目录访问 | `(\.ssh\|\.aws\|\.kube\|\.gnupg\|\.config/gcloud\|credentials)` 在 `.py` 文件中 | 凭证窃取 |
-| setup.py 网络调用 | `setup.py` 内含 `requests\.\|urllib\|http\.client\|socket\.\|subprocess` | 安装时攻击 |
+| Pattern | Regex | Description |
+|---------|-------|-------------|
+| .pth executing code | File `*.pth` containing `import \|exec\|eval\|subprocess\|socket\|http\|urllib\|requests` | LiteLLM attack technique |
+| exec + encoding | `(exec\|eval\|compile)\s*\(.*?(base64\|codecs\.decode\|bytes\.fromhex\|decode\()` | Obfuscated execution |
+| Sensitive directory access | `(\.ssh\|\.aws\|\.kube\|\.gnupg\|\.config/gcloud\|credentials)` in `.py` files | Credential theft |
+| setup.py network calls | `setup.py` containing `requests\.\|urllib\|http\.client\|socket\.\|subprocess` | Install-time attack |
 
-### 🟡 High — 需人工判断
+### 🟡 High — Requires Manual Review
 
-| 模式 | 正则 | 说明 |
-|------|------|------|
-| 大段 base64 | `[A-Za-z0-9+/]{200,}={0,2}` | 可能是编码的恶意载荷 |
-| 网络外传 | `requests\.post\|urllib\.request\.urlopen\|http\.client\.HTTP\|socket\.connect` | 数据外泄 |
-| 环境变量批量读取 | `os\.environ` 出现 >10 次 | 凭证收集 |
-| setup.py cmdclass | `cmdclass.*?(install\|develop\|egg_info)` | 安装时执行自定义代码 |
-| 异常二进制 | 纯 Python 包中出现 `.so`/`.dll`/`.exe` 文件 | 可能捆绑恶意二进制 |
+| Pattern | Regex | Description |
+|---------|-------|-------------|
+| Large base64 block | `[A-Za-z0-9+/]{200,}={0,2}` | Possibly encoded malicious payload |
+| Network exfiltration | `requests\.post\|urllib\.request\.urlopen\|http\.client\.HTTP\|socket\.connect` | Data exfiltration |
+| Bulk env var reading | `os\.environ` appearing >10 times | Credential harvesting |
+| setup.py cmdclass | `cmdclass.*?(install\|develop\|egg_info)` | Custom code execution during install |
+| Unexpected binaries | `.so`/`.dll`/`.exe` files in a pure Python package | Possibly bundled malicious binaries |
 
-### 🟢 Info — 记录但不告警
+### 🟢 Info — Logged but No Alert
 
-| 模式 | 说明 |
-|------|------|
-| `.pth` 文件存在但内容只是路径 | 正常用途 |
-| `os.environ.get('KEY')` 少量使用 | 正常配置读取 |
+| Pattern | Description |
+|---------|-------------|
+| `.pth` file present but content is only paths | Normal usage |
+| `os.environ.get('KEY')` used sparingly | Normal configuration reading |
 
-## npm 包
+## npm Packages
 
 ### 🔴 Critical
 
-| 模式 | 正则 | 说明 |
-|------|------|------|
-| install 钩子 + child_process | `package.json` scripts 含 `preinstall\|postinstall` 且代码含 `child_process` | 安装时攻击 |
-| eval + 编码 | `eval\s*\(\s*(Buffer\|atob\|decode)` | 混淆执行 |
+| Pattern | Regex | Description |
+|---------|-------|-------------|
+| install hook + child_process | `package.json` scripts containing `preinstall\|postinstall` and code containing `child_process` | Install-time attack |
+| eval + encoding | `eval\s*\(\s*(Buffer\|atob\|decode)` | Obfuscated execution |
 
 ### 🟡 High
 
-| 模式 | 正则 | 说明 |
-|------|------|------|
-| child_process 使用 | `child_process\|\.exec\(\|\.execSync\(` | 进程创建 |
-| base64 解码 | `Buffer\.from\(.{50,},.*base64` | 可疑编码 |
-| eval 使用 | `eval\s*\(` | 动态执行 |
-| 网络请求 | `net\.connect\|http\.request\|https\.request` 在非 HTTP 客户端库中 | 意外网络调用 |
+| Pattern | Regex | Description |
+|---------|-------|-------------|
+| child_process usage | `child_process\|\.exec\(\|\.execSync\(` | Process creation |
+| base64 decoding | `Buffer\.from\(.{50,},.*base64` | Suspicious encoding |
+| eval usage | `eval\s*\(` | Dynamic execution |
+| Network requests | `net\.connect\|http\.request\|https\.request` in non-HTTP client libraries | Unexpected network calls |
 
-## 模式更新日志
+## Pattern Update Log
 
-- 2026-03-25: 初始版本，基于 LiteLLM 事件 + npm 历史供应链攻击总结
+- 2026-03-25: Initial version, based on LiteLLM incident + npm historical supply chain attack summary

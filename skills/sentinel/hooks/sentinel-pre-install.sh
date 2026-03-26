@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 # sentinel-pre-install.sh — Sentinel M2 PreToolUse Hook
-# 拦截 npm install / pip install，调用 check-package.sh 审查
-# 只拦截硬信号(typosquatting/known-malicious/publish-age<48h/registry不存在)
-# OSV 历史漏洞不作为拦截依据（不带版本号查会误杀正常包）
+# Intercepts npm install / pip install and runs check-package.sh
+# Only blocks on hard signals (typosquatting/known-malicious/publish-age<48h/registry missing)
+# OSV historical vulns are NOT used for blocking (querying without version causes false positives)
 #
-# 用法: 在 Claude Code settings.json 的 hooks.PreToolUse 中添加本脚本
-# 或嵌入到已有的 pre-tool-use hook 中
+# Usage: Add to Claude Code settings.json hooks.PreToolUse
+# or embed into your existing pre-tool-use hook
 
 set -euo pipefail
 
 SENTINEL_DIR="${SENTINEL_DIR:-$HOME/.claude/skills/sentinel/scripts}"
 
-# 读取 stdin (Claude Code Hook 协议: JSON with tool_name, tool_input)
+# Read stdin (Claude Code Hook protocol: JSON with tool_name, tool_input)
 INPUT=$(cat)
 
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
 
-# 只处理 Bash 工具
+# Only handle Bash tool
 if [ "$TOOL_NAME" != "Bash" ]; then
   echo '{}'
   exit 0
@@ -24,8 +24,8 @@ fi
 
 CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 
-# sentinel_should_block: 只看硬信号
-# osv-vulns 不带版本号查会返回历史漏洞，不作为拦截依据
+# sentinel_should_block: only check hard signals
+# osv-vulns without version returns historical CVEs — not used for blocking
 sentinel_should_block() {
   local result="$1"
   python3 -c "
@@ -40,7 +40,7 @@ else:
 " <<< "$result" 2>/dev/null || echo ""
 }
 
-# 检测 npm install / yarn add / pnpm add
+# Detect npm install / yarn add / pnpm add
 if echo "$CMD" | grep -qE '(npm install|npm i |yarn add|pnpm add)\s+[^-]'; then
   PKG=$(echo "$CMD" | grep -oE '(npm install|npm i |yarn add|pnpm add)\s+\S+' | awk '{print $NF}' | sed 's/@.*//')
   if [ -n "$PKG" ] && [ -x "$SENTINEL_DIR/check-package.sh" ]; then
@@ -53,7 +53,7 @@ if echo "$CMD" | grep -qE '(npm install|npm i |yarn add|pnpm add)\s+[^-]'; then
   fi
 fi
 
-# 检测 pip install / pip3 install
+# Detect pip install / pip3 install
 if echo "$CMD" | grep -qE '(pip3? install)\s+[^-]'; then
   PKG=$(echo "$CMD" | grep -oE '(pip3? install)\s+\S+' | awk '{print $NF}' | sed 's/[>=<].*//')
   if [ -n "$PKG" ] && [ -x "$SENTINEL_DIR/check-package.sh" ]; then
@@ -66,6 +66,6 @@ if echo "$CMD" | grep -qE '(pip3? install)\s+[^-]'; then
   fi
 fi
 
-# 未命中 install 命令，放行
+# No install command detected — pass through
 echo '{}'
 exit 0

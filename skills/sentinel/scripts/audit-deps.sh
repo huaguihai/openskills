@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# audit-deps.sh — 项目依赖审计（npm audit + pip-audit + OSV）
-# 用法: audit-deps.sh [project-dir]
+# audit-deps.sh — Project dependency audit (npm audit + pip-audit + OSV)
+# Usage: audit-deps.sh [project-dir]
 set -euo pipefail
 
 PROJECT_DIR="${1:-.}"
@@ -16,11 +16,11 @@ print(json.dumps(a))
 ")
 }
 
-echo "📋 扫描项目: $PROJECT_DIR"
+echo "📋 Scanning project: $PROJECT_DIR"
 
-# ─── Node.js 项目 ───
+# ─── Node.js Project ───
 if [ -f "$PROJECT_DIR/package.json" ]; then
-  echo "检测到 Node.js 项目..."
+  echo "Node.js project detected..."
 
   if [ -f "$PROJECT_DIR/package-lock.json" ] || [ -d "$PROJECT_DIR/node_modules" ]; then
     AUDIT_RESULT=$(cd "$PROJECT_DIR" && npm audit --json 2>/dev/null || echo '{"vulnerabilities":{}}')
@@ -34,7 +34,7 @@ high = sum(1 for v in vulns.values() if v.get('severity') == 'high')
 moderate = sum(1 for v in vulns.values() if v.get('severity') == 'moderate')
 low = sum(1 for v in vulns.values() if v.get('severity') == 'low')
 print(json.dumps({'critical': critical, 'high': high, 'moderate': moderate, 'low': low, 'total': len(vulns)}))
-# 输出每个漏洞
+# Output each vulnerability
 for name, info in vulns.items():
     sev = info.get('severity', 'unknown')
     via = info.get('via', [])
@@ -54,7 +54,7 @@ for name, info in vulns.items():
         print(f'VULN|{name}|{sev}|{title}|no fix')
 " 2>/dev/null || echo '{"total":0}')
 
-    # 解析第一行 JSON
+    # Parse first line JSON
     SUMMARY_LINE=$(echo "$VULN_SUMMARY" | head -1)
     TOTAL=$(echo "$SUMMARY_LINE" | python3 -c "import json,sys; print(json.load(sys.stdin).get('total',0))" 2>/dev/null || echo "0")
 
@@ -64,11 +64,11 @@ for name, info in vulns.items():
       done
     fi
   else
-    echo "⚠️ 无 package-lock.json，跳过 npm audit"
+    echo "⚠️ No package-lock.json found, skipping npm audit"
   fi
 fi
 
-# ─── Python 项目 ───
+# ─── Python Project ───
 REQ_FILE=""
 if [ -f "$PROJECT_DIR/requirements.txt" ]; then
   REQ_FILE="$PROJECT_DIR/requirements.txt"
@@ -77,11 +77,11 @@ elif [ -f "$PROJECT_DIR/pyproject.toml" ]; then
 fi
 
 if [ -n "$REQ_FILE" ]; then
-  echo "检测到 Python 项目..."
+  echo "Python project detected..."
 
-  # 确保 pip-audit 可用
+  # Ensure pip-audit is available
   if ! command -v pip-audit &>/dev/null; then
-    echo "安装 pip-audit..."
+    echo "Installing pip-audit..."
     pip install pip-audit -q 2>/dev/null || true
   fi
 
@@ -109,13 +109,13 @@ for dep in deps:
       add_alert "$pkg" "vulnerability" "$vid (fix: $fix)"
     done
   else
-    echo "⚠️ pip-audit 安装失败，使用 OSV API 回退"
+    echo "⚠️ pip-audit installation failed, falling back to OSV API"
   fi
 fi
 
-# ─── OSV 批量查询（补充） ───
+# ─── OSV Batch Query (supplementary) ───
 if [ -f "$PROJECT_DIR/requirements.txt" ]; then
-  echo "查询 OSV 漏洞数据库..."
+  echo "Querying OSV vulnerability database..."
   python3 -c "
 import json, urllib.request
 with open('${PROJECT_DIR}/requirements.txt') as f:
@@ -142,7 +142,7 @@ with open('${PROJECT_DIR}/requirements.txt') as f:
   done
 fi
 
-# ─── 输出 ───
+# ─── Output ───
 echo "$ALERTS" | python3 -c "
 import json, sys
 alerts = json.load(sys.stdin)
