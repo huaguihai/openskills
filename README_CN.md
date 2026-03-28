@@ -12,6 +12,7 @@
 | [blog-pipeline](skills/blog-pipeline/) | 端到端博客写作流水线，含风格规范和独立审核 |
 | [public-apis](skills/public-apis/) | 从 51 个分类中查找和推荐免费公共 API |
 | [opportunity-radar](skills/opportunity-radar/) | 独立开发者商机发现助手 — 10 条转换策略，从产品/市场/资讯中发现软件商机方向 |
+| [smart-fetch](skills/smart-fetch/) | 智能网页抓取路由 — 自动为任意 URL 选择最合适的工具（Jina/WebFetch/curl），零依赖 |
 
 ## Sentinel — 供应链防御
 
@@ -58,7 +59,10 @@ skills/
 ├── opportunity-radar/ # 独立开发者商机发现
 │   └── SKILL.md
 ├── blog-pipeline/     # 博客写作流水线
-└── public-apis/       # 公共 API 发现
+├── public-apis/       # 公共 API 发现
+└── smart-fetch/       # 智能网页抓取路由（Jina/WebFetch/curl）
+    ├── SKILL.md
+    └── references/    # site-patterns.md
 ```
 
 ## 许可证

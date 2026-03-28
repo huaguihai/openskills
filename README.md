@@ -12,6 +12,7 @@ Open-source AI agent skills for [OpenClaw](https://github.com/anthropics/opencla
 | [blog-pipeline](skills/blog-pipeline/) | End-to-end blog writing pipeline with style enforcement and independent review |
 | [public-apis](skills/public-apis/) | Find and recommend free public APIs across 51 categories |
 | [opportunity-radar](skills/opportunity-radar/) | Indie dev opportunity discovery — 10 transformation strategies to find software business ideas from products/markets/news |
+| [smart-fetch](skills/smart-fetch/) | Smart web scraping router — auto-selects the right tool (Jina/WebFetch/curl) for any URL, zero dependencies |
 
 ## Sentinel — Supply Chain Defense
 
@@ -58,7 +59,10 @@ skills/
 ├── opportunity-radar/ # Indie dev opportunity discovery
 │   └── SKILL.md
 ├── blog-pipeline/     # Blog writing pipeline
-└── public-apis/       # Public API discovery
+├── public-apis/       # Public API discovery
+└── smart-fetch/       # Smart web scraping router (Jina/WebFetch/curl)
+    ├── SKILL.md
+    └── references/    # site-patterns.md
 ```
 
 ## License
